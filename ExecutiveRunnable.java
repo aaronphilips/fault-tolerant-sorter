@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Timer;
 // http://stackoverflow.com/questions/877096/how-can-i-pass-a-parameter-to-a-java-thread
 public class ExecutiveRunnable implements Runnable{
   private String inputFile ;
@@ -29,10 +30,15 @@ public class ExecutiveRunnable implements Runnable{
 
     PrimaryRunnable primaryRunnable = new PrimaryRunnable(inputFile,primaryFailureProbability);
     Thread primaryThread=new Thread(primaryRunnable);
+    Timer timer = new Timer();
+
+		Watchdog watchdog = new Watchdog(primaryThread);
+		timer.schedule(watchdog, timeLimit);
     primaryThread.start();
     try{
       primaryThread.join();
-      System.out.println("thread finished");
+      timer.cancel();
+      System.out.println("primaryThread finished");
     }catch(InterruptedException e){
       e.printStackTrace();
       System.out.println("Thread was interupted");
@@ -42,16 +48,35 @@ public class ExecutiveRunnable implements Runnable{
     ArrayList<Integer> sortedIntegers=primaryRunnable.getResult();
 
     Adjudicator adjudicator= new Adjudicator();
-    adjudicator.sortingAcceptanceTest(sortedIntegers);
+    try{
+      if(adjudicator.sortingAcceptanceTest(sortedIntegers)){
+        // return sortedIntegers;
+        FileIO.saveListToFile(sortedIntegers,outputFile);
+        return;
+      }else{
+        System.out.println("PrimaryFailedException");
+        throw new PrimaryFailedException();
+      }
+    }catch (PrimaryFailedException e) {
+        return;
+    }
+
+    // catch local exception by basically doing this
+
+    // setup backups
+    // add to list of runnables
+
+
+
   }
 
   private class Adjudicator {
     protected Boolean sortingAcceptanceTest(ArrayList<Integer> sortedIntegers){
+      // System.out.println("dsajklhdsfd");
+      // System.out.println(sortedIntegers==null);
+      if(sortedIntegers==null) return false;
 
-      // ArrayList<String> strList=FileIO.loadFileToList(fileName);
-      // ArrayList<Integer> sortedIntegers=new ArrayList<Integer>();
-      //
-      // for(String s : strList) sortedIntegers.add(Integer.parseInt(s));
+
 
       Iterator<Integer> sortedIntegersIterator= sortedIntegers.iterator();
       Integer lastInteger=Integer.MIN_VALUE;

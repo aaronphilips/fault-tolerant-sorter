@@ -47,12 +47,12 @@ public class Heap<T extends Comparable<T>> {
 			int node=0;
 			Collections.swap(unsorted, node,treesize-1);
 			treesize--;
-			unsorted=sort(unsorted,node,treesize);
+			unsorted=subsort(unsorted,node,treesize);
 			}
 	return unsorted;
 	}
 
-	private ArrayList<T> sort(ArrayList<T> unsorted,int node, int treesize){
+	private ArrayList<T> subsort(ArrayList<T> unsorted,int node, int treesize){
 		if((node*2)+1>treesize|(node*2)+2>treesize){return unsorted;}
 		T parent= unsorted.get(node);
 		T leftchild=unsorted.get((node*2)+1);
@@ -61,11 +61,11 @@ public class Heap<T extends Comparable<T>> {
 				(parent.compareTo(rightchild)<0&(node*2)+2<treesize)){
 			if(leftchild.compareTo(rightchild)>=0|(node*2)+2>=treesize){
 				Collections.swap(unsorted, node,(node*2)+1);
-				unsorted=sort(unsorted,(node*2)+1,treesize);
+				unsorted=subsort(unsorted,(node*2)+1,treesize);
 			}
 			else{
 				Collections.swap(unsorted, node,(node*2)+2);
-				unsorted=sort(unsorted,(node*2)+2,treesize);
+				unsorted=subsort(unsorted,(node*2)+2,treesize);
 			}
 		}
 		return unsorted;

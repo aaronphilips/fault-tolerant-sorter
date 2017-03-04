@@ -21,7 +21,7 @@ public class DataSorter{
     executiveThread.start();
     try{
       executiveThread.join();
-      System.out.println("thread finished");
+      System.out.println("executiveThread finished");
     }catch(InterruptedException e){
       e.printStackTrace();
       System.out.println("Thread was interupted");
