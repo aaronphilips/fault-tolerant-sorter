@@ -118,7 +118,7 @@ void sort(int * int_array,int size){
   int j; // sub counter for partially sorted sub array
   int current_comparison_value;
   // last conditional check and initial setup
-  for(i=0;i<size;i++){
+  for(i=1;i<size;i++){
     memory_accesses=memory_accesses+1;
     current_comparison_value=int_array[i];
     j=i-1;

@@ -116,7 +116,11 @@ public class ExecutiveRunnable implements Runnable{
         // System.out.print("Last:"+lastInteger.toString()+"  Current:"+currentInteger.toString()+"   ");
         // System.out.println(currentInteger<lastInteger);
 
-        if(currentInteger<lastInteger) return false;
+        if(currentInteger<=lastInteger) {
+          System.out.println("returning false");
+          System.out.println("currentInteger: "+currentInteger.toString()+"   lastInteger :"+ lastInteger.toString());
+          return false;
+        }
 
         lastInteger=currentInteger;
       }
