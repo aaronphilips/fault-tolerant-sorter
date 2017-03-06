@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 // based on a heap sort class that I made in 2015
 public class Heap<T extends Comparable<T>> {
@@ -51,6 +52,24 @@ public class Heap<T extends Comparable<T>> {
 	}
 	public Integer getMemoryAccesses(){
 		return numberOfMemoryAccesses;
+	}
+
+	// made for 422 assignment
+	// ONLY works for integers, and so ruins the generics of this class
+	public Boolean sortingRoutine(String inputFileName,String outputFileName,Double failureProbablity){
+		ArrayList<String> stringList=FileIO.loadFileToList(inputFileName);
+		ArrayList unsortedIntegers=new ArrayList<Integer>();
+		for(String s : stringList) unsortedIntegers.add(Integer.parseInt(s));
+		// Heap<Integer> heap= new Heap<Integer>();
+		this.setHeapArrayList(unsortedIntegers);
+		this.sort();
+		FileIO.saveListToFile(this.getHeapArrayList(),outputFileName);
+		// System.out.println(result);
+		// check HAZARD and set failure
+		Double HAZARD =this.getMemoryAccesses()*failureProbablity;
+		Random random = new Random();
+		Double randomNumber=random.nextDouble();
+		return !((0.5<randomNumber)&&(randomNumber<(0.5+HAZARD)));
 	}
 
 	// adding memory accesses

@@ -6,9 +6,8 @@ import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 public final class FileIO{
-  private FileIO(){
 
-  }
+  private FileIO(){}
 
   public static void saveListToFile (ArrayList<?> listToBePrinted,String fileName){
     Iterator<?> listToBePrintedIterator=listToBePrinted.iterator();
@@ -32,5 +31,9 @@ public final class FileIO{
       System.out.println("File:<"+fileName+"> was not found");
     }
     return stringList;
+  }
+
+  public static Boolean deleteFile(String fileName){
+    return (new File("./"+fileName).delete());
   }
 }

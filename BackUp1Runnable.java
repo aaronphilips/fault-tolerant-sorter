@@ -1,26 +1,42 @@
 import java.util.ArrayList;
 
-public class PrimaryRunnable implements Runnable{
+public class BackUp1Runnable implements ResultRunnable{
   private Double failureProbablity;
   private String inputFileName;
   private String outputFileName;
   // private String result;
   private Boolean failure;
-  public PrimaryRunnable(String inputFileName, String outputFileName, Double failureProbablity){
+  public BackUp1Runnable(String inputFileName, String outputFileName, Double failureProbablity){
     this.failureProbablity=failureProbablity;
     this.inputFileName=inputFileName;
     this.outputFileName=outputFileName;
+    this.failure=false;
   }
 
   public void run(){
     try{
-
-    }catch(ThreadDeath threadDeath){
+      // try{Thread.sleep(5000);}catch(InterruptedException e){System.out.println(e);}
+      // System.loadLibrary("_insertionsort");
+      InsertionSort insertionSortObject= new InsertionSort();
+      // double failureProbablity=0.000001;
+      int result = insertionSortObject.insertionSortMethod(inputFileName,outputFileName, failureProbablity);
+      System.out.println("RESULT"+result);
+      failure = (result==-1)? true:false;
+      System.out.print("failure var 1:");
+      System.out.println(failure);
     }
-    public String getResult(){
-      // either return the result (a file) by its name, or null as an error return
-      //    as per this line of the assignment
-      if(!failure) return outputFileName;
-      return null;
+    catch(ThreadDeath threadDeath){
+      System.out.println("bakcup Thread dying: something went wrong or watchdog timeout");
+      failure=true;
+      throw new ThreadDeath();
     }
+  }
+  public String getResult(){
+    // either return the result (a file) by its name, or null as an error return
+    //    as per this line of the assignment
+    System.out.print("failure var 1:");
+    System.out.println(failure);
+    if(!failure) return outputFileName;
+    return null;
+  }
 }

@@ -21,23 +21,17 @@ public class ExecutiveRunnable implements Runnable{
   }
 
   public void run(){
-    // System.out.println("I started");
-    // System.out.println(inputFile);
-    // System.out.println(outputFile);
-    // System.out.println(primaryFailureProbability);
-    // System.out.println(secondaryFailureProbability);
-    // System.out.println(timeLimit);
 
     PrimaryRunnable primaryRunnable = new PrimaryRunnable(inputFileName,outputFileName,primaryFailureProbability);
-    Thread primaryThread=new Thread(primaryRunnable);
-    Timer timer = new Timer();
 
-		Watchdog watchdog = new Watchdog(primaryThread);
-		timer.schedule(watchdog, timeLimit);
+    Thread primaryThread=new Thread(primaryRunnable);
+    Timer primaryTimer = new Timer();
+		Watchdog primaryWatchdog = new Watchdog(primaryThread);
+		primaryTimer.schedule(primaryWatchdog, timeLimit);
     primaryThread.start();
     try{
       primaryThread.join();
-      timer.cancel();
+      primaryTimer.cancel();
       System.out.println("primaryThread finished");
     }catch(InterruptedException e){
       e.printStackTrace();
@@ -59,8 +53,41 @@ public class ExecutiveRunnable implements Runnable{
         throw new PrimaryFailedException();
       }
     }catch (PrimaryFailedException e) {
-        return;
+        FileIO.deleteFile(outputFileName);
+        e.printStackTrace();
     }
+
+    ArrayList<ResultRunnable> backUpVariants=new ArrayList<ResultRunnable>();
+    BackUp1Runnable backUp1Runnable = new BackUp1Runnable(inputFileName,outputFileName,primaryFailureProbability);
+    backUpVariants.add(backUp1Runnable);
+    Iterator<ResultRunnable> backUpVariantsIterator=backUpVariants.iterator();
+
+    while(backUpVariantsIterator.hasNext()){
+      ResultRunnable backUpRunnable = backUpVariantsIterator.next();
+      Thread backUpThread=new Thread(backUpRunnable);
+      Timer backUpTimer = new Timer();
+  		Watchdog backUpWatchdog = new Watchdog(backUpThread);
+  		backUpTimer.schedule(backUpWatchdog, timeLimit);
+      backUpThread.start();
+      try{
+        backUpThread.join();
+        backUpTimer.cancel();
+        System.out.println("backUpThread finished");
+      }catch(InterruptedException e){
+        e.printStackTrace();
+        System.out.println("Thread was interupted");
+        return;
+      }
+      resultFile=backUpRunnable.getResult();
+      System.out.println("back up happened resultFile:"+resultFile);
+      if(adjudicator.sortingAcceptanceTest(resultFile)){
+        System.out.println("Result passed");
+        return;
+      }
+    }
+
+    FileIO.deleteFile(outputFileName);
+    throw new FailureException();
 
     // catch local exception by basically doing this
 
@@ -76,6 +103,7 @@ public class ExecutiveRunnable implements Runnable{
       // System.out.println("dsajklhdsfd");
       // System.out.println(sortedIntegers==null);
       if(resultFile==null) return false;
+      System.out.println("got here");
       ArrayList<String> stringList=FileIO.loadFileToList(resultFile);
       ArrayList<Integer> sortedIntegers=new ArrayList<Integer>();
       for(String s : stringList) sortedIntegers.add(Integer.parseInt(s));
@@ -85,8 +113,8 @@ public class ExecutiveRunnable implements Runnable{
 
       while(sortedIntegersIterator.hasNext()){
         currentInteger=sortedIntegersIterator.next();
-        System.out.print("Last:"+lastInteger.toString()+"  Current:"+currentInteger.toString()+"   ");
-        System.out.println(currentInteger<lastInteger);
+        // System.out.print("Last:"+lastInteger.toString()+"  Current:"+currentInteger.toString()+"   ");
+        // System.out.println(currentInteger<lastInteger);
 
         if(currentInteger<lastInteger) return false;
 
@@ -95,5 +123,4 @@ public class ExecutiveRunnable implements Runnable{
       return true;
     }
   }
-
 }

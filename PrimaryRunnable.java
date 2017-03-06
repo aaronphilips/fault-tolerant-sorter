@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class PrimaryRunnable implements Runnable{
+public class PrimaryRunnable implements ResultRunnable{
   private Double failureProbablity;
   private String inputFileName;
   private String outputFileName;
@@ -10,18 +10,19 @@ public class PrimaryRunnable implements Runnable{
     this.failureProbablity=failureProbablity;
     this.inputFileName=inputFileName;
     this.outputFileName=outputFileName;
+    this.failure=false;
   }
   public void run(){
     try{
       // REMOVE THIS this is harsh delay timer
       // try{Thread.sleep(5000);}catch(InterruptedException e){System.out.println(e);}
 
-      ArrayList<String> stringList=FileIO.loadFileToList(inputFileName);
-      ArrayList<Integer> unsortedIntegers=new ArrayList<Integer>();
-      for(String s : stringList) unsortedIntegers.add(Integer.parseInt(s));
+      // ArrayList<String> stringList=FileIO.loadFileToList(inputFileName);
+      // ArrayList<Integer> unsortedIntegers=new ArrayList<Integer>();
+      // for(String s : stringList) unsortedIntegers.add(Integer.parseInt(s));
       Heap<Integer> heap= new Heap<Integer>();
-      heap.setHeapArrayList(unsortedIntegers);
-      heap.sort();
+      // heap.setHeapArrayList(unsortedIntegers);
+      failure=!(heap.sortingRoutine(inputFileName,outputFileName,failureProbablity));
       // heap.printHeap();
 
       // So upon reading the assignment seems like the output is the result itself
@@ -31,14 +32,15 @@ public class PrimaryRunnable implements Runnable{
       //     Makes sense to use output as end point or return result
       // So when getResult is called, its essentially returning the result(file)
       //    by its name
-      FileIO.saveListToFile(heap.getHeapArrayList(),outputFileName);
+      // FileIO.saveListToFile(heap.getHeapArrayList(),outputFileName);
+      //
+      // // System.out.println(result);
+      // // check HAZARD and set failure
+      // Double HAZARD =heap.getMemoryAccesses()*failureProbablity;
+      // Random random = new Random();
+      // Double randomNumber=random.nextDouble();
+      // failure=(0.5<randomNumber)&&(randomNumber<(0.5+HAZARD));
 
-      // System.out.println(result);
-      // check HAZARD and set failure
-      Double HAZARD =heap.getMemoryAccesses()*failureProbablity;
-      Random random = new Random();
-      Double randomNumber=random.nextDouble();
-      failure=(0.5<randomNumber)&&(randomNumber<(0.5+HAZARD));
     }catch (ThreadDeath threadDeath){
       System.out.println("PrimaryThread dying: something went wrong or watchdog timeout");
       failure=true;
