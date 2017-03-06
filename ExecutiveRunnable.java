@@ -3,18 +3,18 @@ import java.util.Iterator;
 import java.util.Timer;
 // http://stackoverflow.com/questions/877096/how-can-i-pass-a-parameter-to-a-java-thread
 public class ExecutiveRunnable implements Runnable{
-  private String inputFile ;
-  private String outputFile ;
+  private String inputFileName ;
+  private String outputFileName ;
   private Double primaryFailureProbability ;
   private Double secondaryFailureProbability ;
   private Integer timeLimit;
 
-  public ExecutiveRunnable(String inputFile,String outputFile,
+  public ExecutiveRunnable(String inputFileName,String outputFileName,
                          Double primaryFailureProbability,
                          Double secondaryFailureProbability,
                          Integer timeLimit){
-    this.inputFile = inputFile;
-    this.outputFile = outputFile;
+    this.inputFileName = inputFileName;
+    this.outputFileName = outputFileName;
     this.primaryFailureProbability = primaryFailureProbability;
     this.secondaryFailureProbability = secondaryFailureProbability;
     this.timeLimit=timeLimit;
@@ -28,7 +28,7 @@ public class ExecutiveRunnable implements Runnable{
     // System.out.println(secondaryFailureProbability);
     // System.out.println(timeLimit);
 
-    PrimaryRunnable primaryRunnable = new PrimaryRunnable(inputFile,primaryFailureProbability);
+    PrimaryRunnable primaryRunnable = new PrimaryRunnable(inputFileName,outputFileName,primaryFailureProbability);
     Thread primaryThread=new Thread(primaryRunnable);
     Timer timer = new Timer();
 
@@ -45,13 +45,14 @@ public class ExecutiveRunnable implements Runnable{
       return;
     }
 
-    ArrayList<Integer> sortedIntegers=primaryRunnable.getResult();
+    String resultFile=primaryRunnable.getResult();
 
     Adjudicator adjudicator= new Adjudicator();
     try{
-      if(adjudicator.sortingAcceptanceTest(sortedIntegers)){
+      if(adjudicator.sortingAcceptanceTest(resultFile)){
+        System.out.println("Result passed");
         // return sortedIntegers;
-        FileIO.saveListToFile(sortedIntegers,outputFile);
+        // FileIO.saveListToFile(sortedIntegers,outputFile);
         return;
       }else{
         System.out.println("PrimaryFailedException");
@@ -71,13 +72,13 @@ public class ExecutiveRunnable implements Runnable{
   }
 
   private class Adjudicator {
-    protected Boolean sortingAcceptanceTest(ArrayList<Integer> sortedIntegers){
+    protected Boolean sortingAcceptanceTest(String resultFile){
       // System.out.println("dsajklhdsfd");
       // System.out.println(sortedIntegers==null);
-      if(sortedIntegers==null) return false;
-
-
-
+      if(resultFile==null) return false;
+      ArrayList<String> stringList=FileIO.loadFileToList(resultFile);
+      ArrayList<Integer> sortedIntegers=new ArrayList<Integer>();
+      for(String s : stringList) sortedIntegers.add(Integer.parseInt(s));
       Iterator<Integer> sortedIntegersIterator= sortedIntegers.iterator();
       Integer lastInteger=Integer.MIN_VALUE;
       Integer currentInteger;
