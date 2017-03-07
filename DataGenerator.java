@@ -26,7 +26,6 @@ public class DataGenerator{
     ArrayList<String> strList =FileIO.loadFileToList(fileName);
     unsortedRandomIntegers=new ArrayList<Integer>(integerListLength);
     for(String s : strList) unsortedRandomIntegers.add(Integer.parseInt(s));
-    // System.out.println(unsortedRandomIntegers);
 
   }
 }

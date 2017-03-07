@@ -8,7 +8,7 @@ import java.util.TimerTask;
 
 /**
  * @author dick
- *
+ * USED BY AARON PHILIPS student of Dr. Scott Dick
 
  */
 public class Watchdog extends TimerTask {

@@ -3,17 +3,15 @@
 
 public class DataSorter{
   public static void main(String[] args) {
-    System.out.println(args[0]);
-    System.out.println(args[1]);
-    System.out.println(args[2]);
-    System.out.println(args[3]);
-    System.out.println(args[4]);
-    String inputFile = args[0];
-    String outputFile = args[1];
+  
+    String inputFileName = args[0];
+    String outputFileName = args[1];
     Double primaryFailureProbability = Double.parseDouble(args[2]);
     Double secondaryFailureProbability = Double.parseDouble(args[3]);
     Integer timeLimit=Integer.parseInt(args[4]);
-    ExecutiveRunnable executiveRunnable = new ExecutiveRunnable(inputFile,outputFile,
+
+    ExecutiveRunnable executiveRunnable = new ExecutiveRunnable(inputFileName,
+                                                       outputFileName,
                                                        primaryFailureProbability,
                                                        secondaryFailureProbability,
                                                        timeLimit);
@@ -21,10 +19,9 @@ public class DataSorter{
     executiveThread.start();
     try{
       executiveThread.join();
-      System.out.println("executiveThread finished");
     }catch(InterruptedException e){
       e.printStackTrace();
-      System.out.println("Thread was interupted");
+      System.out.println("executiveThread was interupted");
     }
   }
 }

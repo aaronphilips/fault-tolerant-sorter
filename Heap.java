@@ -59,7 +59,7 @@ public class Heap<T extends Comparable<T>> {
 	public Boolean sortingRoutine(String inputFileName,String outputFileName,Double failureProbablity){
 		ArrayList<String> stringList=FileIO.loadFileToList(inputFileName);
 		ArrayList unsortedIntegers=new ArrayList<Integer>();
-		for(String s : stringList) unsortedIntegers.add(Integer.parseInt(s));
+		for(String s : stringList) unsortedIntegers.add(Integer.valueOf(s));
 		// Heap<Integer> heap= new Heap<Integer>();
 		this.setHeapArrayList(unsortedIntegers);
 		this.sort();

@@ -19,7 +19,6 @@ JNIEXPORT jint JNICALL Java_InsertionSort_insertionSortMethod
   memory_accesses=0;
 
   double failureProbablity = failureProbablityJava;
-  printf("failureProbablity: %f\n",failureProbablity );
 
   const char * inputFileName;
   inputFileName=(*env)->GetStringUTFChars(env, inputFileNameJava, NULL);
@@ -38,8 +37,6 @@ JNIEXPORT jint JNICALL Java_InsertionSort_insertionSortMethod
   sort(int_array,size);
   if(save_array_to_file(int_array,size,outputFileName)==-1) return -1;
 
-  printf("size: %d\n",size);
-
 
   int result=compute_hazard(failureProbablity);
 
@@ -54,10 +51,6 @@ int compute_hazard(double failureProbablity){
   srand((unsigned) time(&t));
   double HAZARD=memory_accesses*failureProbablity;
   double random_number=(double)rand() / (double)RAND_MAX ;
-  printf("h:%f\n",HAZARD );
-  printf("r:%f\n",random_number );
-  printf("0.5+h:%f\n",HAZARD+0.5);
-  printf("%d\n",memory_accesses );
   if((0.5<random_number)&&random_number<(0.5+HAZARD)) return -1;
   return 1;
 }
@@ -131,6 +124,5 @@ void sort(int * int_array,int size){
     }
     memory_accesses=memory_accesses+1;
     int_array[j+1]=current_comparison_value;
-    // for i counter
   }
 }
