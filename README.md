@@ -1,6 +1,13 @@
 # multithreaded-fault-tolerant-sorter
 ### follows Recovery Blocks algorithm (RcB) as specified by Pullum 
-Fault-tolerant sorter of number files using recovery blocks. Comes with number file generator:
+
+Fault-tolerant sorter of number files using recovery blocks. 
+
+to setup, run:
+
+make all
+
+Comes with number file generator:
 
 java DataGenerator \<output_file\> \<amount_of_ints_to_generate\>
 
